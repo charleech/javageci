@@ -5,11 +5,13 @@ import javax0.geci.fluent.Fluent;
 import javax0.geci.fluent.FluentBuilder;
 import javax0.geci.tools.JavaSource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class BuildFluentForSourceBuilder {
 
     @Test
+    @DisplayName("Generate the fluent API for the JavaSource writer code generating API")
     public void testSourceBuilderGeneratedApiIsGood() throws Exception {
         if (new Geci().source("../javageci-tools/src/main/java", "./javageci-tools/src/main/java").register(new Fluent()).generate()) {
             Assertions.fail(Geci.FAILED);
@@ -25,8 +27,7 @@ public class BuildFluentForSourceBuilder {
         var forStatement = source.one("forStatement").zeroOrMore(statement);
         var methodDeclaration = source.one("method").optional("modifiers").optional("returnType").optional("exceptions").oneOf("noArgs", "args");
         var method = source.name("MethodBody").one(methodDeclaration).zeroOrMore(methodStatement);
-        var grammar = source.zeroOrMore(source.oneOf(statement, ifStatement, whileStatement, forStatement, method)).one("toString");
-        return grammar;
+        return source.zeroOrMore(source.oneOf(statement, ifStatement, whileStatement, forStatement, method)).one("toString");
     }
 
 }

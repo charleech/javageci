@@ -2,6 +2,8 @@ package javax0.geci.engine;
 
 
 import javax0.geci.api.GeciException;
+import javax0.geci.api.SegmentSplitHelper;
+import javax0.geci.tools.GeciReflectionTools;
 import javax0.geci.util.FileCollector;
 
 import java.io.IOException;
@@ -13,13 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class Source implements javax0.geci.api.Source {
-    private static final Pattern startPattern = Pattern.compile("^(\\s*)//\\s*<\\s*editor-fold\\s+(.*)>\\s*$");
-    private static final Pattern endPattern = Pattern.compile("^\\s*//\\s*<\\s*/\\s*editor-fold\\s*>\\s*$");
-    private static final Pattern attributePattern = Pattern.compile("([\\w\\d_$]+)\\s*=\\s*\"(.*?)\"");
-    private static final String NOT_COMPILED_YET = null;
     final List<String> lines = new ArrayList<>();
     private final String dir;
     private final String className;
@@ -30,22 +27,39 @@ public class Source implements javax0.geci.api.Source {
     private final FileCollector collector;
     boolean inMemory = false;
     private Segment globalSegment = null;
+    private boolean touched = false;
+    private final SegmentSplitHelper splitHelper;
 
     /**
-     * The constructor is not supposed to be used from outside, only through the {@link FileCollector} which indeed
+     * The constructor is not supposed to be used from outside, only through the {@link FileCollector} which
      * is invoked only from {@link Geci#generate()}.
      *
      * @param collector the file collector that this source belongs to. Note that the type {@link FileCollector}
-     *                  is not expoted by the module and this prevents the usres of the module to use this constructor.
+     *                  is not exported by the module and this prevents the users of the module to use this constructor.
      * @param dir       the directory of the source
      * @param path      the path of the source
      */
+    @SuppressWarnings("ClassEscapesDefinedScope")
     public Source(FileCollector collector, String dir, Path path) {
         this.collector = collector;
         this.dir = dir;
-        this.className = FileCollector.calculateClassName(dir, path);
-        this.relativeFile = FileCollector.calculateRelativeName(dir, path);
-        this.absoluteFile = FileCollector.toAbsolute(path);
+        className = FileCollector.calculateClassName(dir, path);
+        relativeFile = FileCollector.calculateRelativeName(dir, path);
+        absoluteFile = FileCollector.toAbsolute(path);
+        splitHelper = collector.getSegmentSplitHelper(this);
+    }
+
+    /**
+     * A source is touched if the generator was writing to it. It is even touched if the generator was writing the same
+     * content to it what there was originally. This flag is used to identify the situation when a generator does not
+     * touch any source When a generator is executed and does not touch any source it throws an exception because it
+     * certainly means that there is a configuration error. Either it is supposed to touch something or it should
+     * not be executed, the test should just be disabled.
+     *
+     * @return true when the source was touched
+     */
+    public boolean isTouched() {
+        return touched;
     }
 
     @Override
@@ -139,6 +153,10 @@ public class Source implements javax0.geci.api.Source {
         return globalSegment;
     }
 
+    public Segment temporary() {
+        return new Segment(0);
+    }
+
     @Override
     public Segment open(String id) throws IOException {
         if (globalSegment != null) {
@@ -172,7 +190,7 @@ public class Source implements javax0.geci.api.Source {
     @Override
     public Class<?> getKlass() {
         try {
-            return Class.forName(className);
+            return GeciReflectionTools.classForName(className);
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             return null;
         }
@@ -193,6 +211,7 @@ public class Source implements javax0.geci.api.Source {
         }
         if (globalSegment == null) {
             for (var entry : segments.entrySet()) {
+                touched = true;
                 var id = entry.getKey();
                 var segment = entry.getValue();
                 var segDesc = findSegment(id);
@@ -203,6 +222,7 @@ public class Source implements javax0.geci.api.Source {
                 lines.addAll(segDesc.startLine + 1, segment.lines);
             }
         } else {
+            touched = true;
             lines.clear();
             lines.addAll(globalSegment.lines);
         }
@@ -264,14 +284,14 @@ public class Source implements javax0.geci.api.Source {
      */
     private SegmentDescriptor findSegment(String id) {
         for (int i = 0; i < lines.size(); i++) {
-            var line = lines.get(i);
-            var lineMatcher = startPattern.matcher(line);
-            if (lineMatcher.matches()) {
-                var attr = parseParametersString(lineMatcher.group(2));
+            final var line = lines.get(i);
+            final var matcher = splitHelper.match(line);
+            if (matcher.isSegmentStart()) {
+                var attr = matcher.attributes();
                 if (id.equals(attr.get("id"))) {
                     var seg = new SegmentDescriptor();
                     seg.attr = attr;
-                    seg.tab = lineMatcher.group(1).length();
+                    seg.tab = matcher.tabbing();
                     seg.startLine = i;
                     seg.endLine = findSegmentEnd(i);
                     return seg;
@@ -282,33 +302,6 @@ public class Source implements javax0.geci.api.Source {
     }
 
     /**
-     * Parses the parameters on the line that contains the {@code // <editor-fold...>} line. For example
-     * if the line is
-     * <pre>
-     *     // <editor-fold id="aa" desc="sample description" other_param="other">
-     * </pre>
-     * <p>
-     * then the map will contain the values:
-     * <pre>
-     *     Map.of("id","aa","desc","sample description","other_param","other")
-     * </pre>
-     *
-     * @param attributes the string containing the part of the line that is after the {@code editor-fold} and
-     *                   before the closing {@code >}
-     * @return the attributes map
-     */
-    private Map<String, String> parseParametersString(String attributes) {
-        var attributeMatcher = attributePattern.matcher(attributes);
-        var attr = new HashMap<String, String>();
-        while (attributeMatcher.find()) {
-            var key = attributeMatcher.group(1);
-            var value = attributeMatcher.group(2);
-            attr.put(key, value);
-        }
-        return attr;
-    }
-
-    /**
      * Find the end of the segment that starts at line {@code start}.
      *
      * @param start the start of the segment of which we seek the end
@@ -316,9 +309,9 @@ public class Source implements javax0.geci.api.Source {
      */
     private int findSegmentEnd(int start) {
         for (int i = start + 1; i < lines.size(); i++) {
-            var line = lines.get(i);
-            var lineMatcher = endPattern.matcher(line);
-            if (lineMatcher.matches()) {
+            final var line = lines.get(i);
+            final var matcher = splitHelper.match(line);
+            if (matcher.isSegmentEnd()) {
                 return i;
             }
         }

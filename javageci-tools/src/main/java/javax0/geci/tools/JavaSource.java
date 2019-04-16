@@ -3,7 +3,6 @@ package javax0.geci.tools;
 import javax0.geci.annotations.Geci;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * A simple tool to write code into a string.
@@ -16,299 +15,206 @@ public class JavaSource implements AutoCloseable {
     private int tabStop = 0;
 
     //<editor-fold id="fluent" desc="fluent API interfaces and classes">
-    public interface Builder extends If24 {
-    }
-
-    public static Builder builder() {
+    public interface Builder extends Afube {}
+    public static Builder builder(){
         return new Wrapper();
     }
-
-    public static class Wrapper implements If16, If17, If14, If15, If18, If19, Builder, If0, If2, If1, If4, If3, If6, If5, If20, If8, If7, If23, If9, If24, If21, If22, AutoCloseable, MethodBody, If12, If13, If10, If11 {
+    public static class Wrapper implements Ecac,Ejoj,Abok,Efeh,Builder,Edak,Acuh,Aduf,Afube,Udoh,Ucok,AutoCloseable,Uguc,Ufuf,Ebud,Ohug,Ofob,Agak,Ukeg,MethodBody,Oded,Ahah,Oceg,Ajef,Ujaj,Ogoj,Akec,Okuk,Ehebe,Obaj,Uhab,Ekog{
         private final javax0.geci.tools.JavaSource that;
-
-        public Wrapper() {
+        public Wrapper(){
             this.that = new javax0.geci.tools.JavaSource();
         }
-
-        public Wrapper ifStatement(String arg1, Object... arg2) {
-            that.ifStatement(arg1, arg2);
+        public Wrapper ifStatement(String arg1, Object...  arg2){
+            that.ifStatement(arg1,arg2);
             return this;
         }
-
-        public Wrapper statement(String arg1, Object... arg2) {
-            that.statement(arg1, arg2);
+        public Wrapper statement(String arg1, Object...  arg2){
+            that.statement(arg1,arg2);
             return this;
         }
-
-        public Wrapper returnStatement() {
+        public Wrapper returnStatement(){
             that.returnStatement();
             return this;
         }
-
-        public Wrapper forStatement(String arg1, Object... arg2) {
-            that.forStatement(arg1, arg2);
+        public Wrapper forStatement(String arg1, Object...  arg2){
+            that.forStatement(arg1,arg2);
             return this;
         }
-
-        public Wrapper write_r(String arg1, Object... arg2) {
-            that.write_r(arg1, arg2);
+        public Wrapper write_r(String arg1, Object...  arg2){
+            that.write_r(arg1,arg2);
             return this;
         }
-
-        public String toString() {
+        public String toString(){
             return that.toString();
         }
-
-        public Wrapper open(String arg1, Object... arg2) {
-            that.open(arg1, arg2);
+        public Wrapper open(String arg1, Object...  arg2){
+            that.open(arg1,arg2);
             return this;
         }
-
-        public Wrapper elseStatement() {
+        public Wrapper elseStatement(){
             that.elseStatement();
             return this;
         }
-
-        public Wrapper method(String arg1) {
+        public Wrapper method(String arg1){
             that.method(arg1);
             return this;
         }
-
-        public Wrapper noArgs() {
+        public Wrapper noArgs(){
             that.noArgs();
             return this;
         }
-
-        public Wrapper returnStatement(String arg1, Object... arg2) {
-            that.returnStatement(arg1, arg2);
+        public Wrapper returnStatement(String arg1, Object...  arg2){
+            that.returnStatement(arg1,arg2);
             return this;
         }
-
-        public Wrapper comment(String arg1, Object... arg2) {
-            that.comment(arg1, arg2);
+        public Wrapper comment(String arg1, Object...  arg2){
+            that.comment(arg1,arg2);
             return this;
         }
-
-        public Wrapper modifiers(String arg1) {
+        public Wrapper modifiers(String arg1){
             that.modifiers(arg1);
             return this;
         }
-
-        public Wrapper args(String... arg1) {
+        public Wrapper args(String...  arg1){
             that.args(arg1);
             return this;
         }
-
-        public Wrapper write_l(String arg1, Object... arg2) {
-            that.write_l(arg1, arg2);
+        public Wrapper write_l(String arg1, Object...  arg2){
+            that.write_l(arg1,arg2);
             return this;
         }
-
-        public Wrapper whileStatement(String arg1, Object... arg2) {
-            that.whileStatement(arg1, arg2);
+        public Wrapper whileStatement(String arg1, Object...  arg2){
+            that.whileStatement(arg1,arg2);
             return this;
         }
-
-        public Wrapper exceptions(String arg1) {
+        public Wrapper exceptions(String arg1){
             that.exceptions(arg1);
             return this;
         }
-
-        public Wrapper returnType(String arg1) {
+        public Wrapper returnType(String arg1){
             that.returnType(arg1);
             return this;
         }
-
-        public Wrapper write_lr(String arg1, Object... arg2) {
-            that.write_lr(arg1, arg2);
+        public Wrapper write(String arg1, Object...  arg2){
+            that.write(arg1,arg2);
             return this;
         }
-
-        public Wrapper write(String arg1, Object... arg2) {
-            that.write(arg1, arg2);
-            return this;
-        }
-
-        public void close() {
+        public void close(){
             that.close();
         }
-
-        public Wrapper newline() {
+        public Wrapper newline(){
             that.newline();
             return this;
         }
     }
-
-    public interface If0 {
+    public interface Aduf {
         String toString();
     }
-
-    public interface If2 {
-        If1 comment(String arg1, Object... arg2);
-
-        If1 statement(String arg1, Object... arg2);
-
-        If1 write(String arg1, Object... arg2);
-
-        If1 write_r(String arg1, Object... arg2);
-
-        If1 write_l(String arg1, Object... arg2);
-
-        If1 newline();
-
-        If1 open(String arg1, Object... arg2);
+    public interface Ohug {
+        Ukeg comment(String arg1, Object...  arg2);
     }
-
-    public interface If5 {
-        If4 comment(String arg1, Object... arg2);
-
-        If4 statement(String arg1, Object... arg2);
-
-        If4 write(String arg1, Object... arg2);
-
-        If4 write_r(String arg1, Object... arg2);
-
-        If4 write_l(String arg1, Object... arg2);
-
-        If4 newline();
-
-        If4 open(String arg1, Object... arg2);
+    public interface Efeh {
+        Ukeg newline();
     }
-
-    public interface If4 extends If1, AutoCloseable, If5 {
+    public interface Acuh {
+        Ukeg open(String arg1, Object...  arg2);
     }
-
-    public interface If6 {
-        If4 elseStatement();
+    public interface Ujaj {
+        Ukeg statement(String arg1, Object...  arg2);
     }
-
-    public interface If3 extends If1, AutoCloseable, If6 {
+    public interface Ogoj {
+        Ukeg write(String arg1, Object...  arg2);
     }
-
-    public interface If8 {
-        If7 comment(String arg1, Object... arg2);
-
-        If7 statement(String arg1, Object... arg2);
-
-        If7 write(String arg1, Object... arg2);
-
-        If7 write_r(String arg1, Object... arg2);
-
-        If7 write_l(String arg1, Object... arg2);
-
-        If7 newline();
-
-        If7 open(String arg1, Object... arg2);
+    public interface Edak {
+        Ukeg write_l(String arg1, Object...  arg2);
     }
-
-    public interface If7 extends If3, AutoCloseable, If8 {
+    public interface Abok {
+        Ukeg write_r(String arg1, Object...  arg2);
     }
-
-    public interface If9 {
-        If7 ifStatement(String arg1, Object... arg2);
-    }
-
-    public interface If11 {
-        If10 comment(String arg1, Object... arg2);
-
-        If10 statement(String arg1, Object... arg2);
-
-        If10 write(String arg1, Object... arg2);
-
-        If10 write_r(String arg1, Object... arg2);
-
-        If10 write_l(String arg1, Object... arg2);
-
-        If10 newline();
-
-        If10 open(String arg1, Object... arg2);
-    }
-
-    public interface If10 extends If1, AutoCloseable, If11 {
-    }
-
-    public interface If12 {
-        If10 whileStatement(String arg1, Object... arg2);
-    }
-
-    public interface If14 {
-        If13 comment(String arg1, Object... arg2);
-
-        If13 statement(String arg1, Object... arg2);
-
-        If13 write(String arg1, Object... arg2);
-
-        If13 write_r(String arg1, Object... arg2);
-
-        If13 write_l(String arg1, Object... arg2);
-
-        If13 newline();
-
-        If13 open(String arg1, Object... arg2);
-    }
-
-    public interface If13 extends If14, If1, AutoCloseable {
-    }
-
-    public interface If15 {
-        If13 forStatement(String arg1, Object... arg2);
-    }
-
-    public interface If16 {
-        MethodBody comment(String arg1, Object... arg2);
-
-        MethodBody statement(String arg1, Object... arg2);
-
-        MethodBody write(String arg1, Object... arg2);
-
-        MethodBody write_r(String arg1, Object... arg2);
-
-        MethodBody write_l(String arg1, Object... arg2);
-
+    public interface Uhab{
+        MethodBody comment(String arg1, Object...  arg2);
         MethodBody newline();
-
-        MethodBody open(String arg1, Object... arg2);
-    }
-
-    public interface If17 {
+        MethodBody open(String arg1, Object...  arg2);
         MethodBody returnStatement();
-
-        MethodBody returnStatement(String arg1, Object... arg2);
+        MethodBody returnStatement(String arg1, Object...  arg2);
+        MethodBody statement(String arg1, Object...  arg2);
+        MethodBody write(String arg1, Object...  arg2);
+        MethodBody write_l(String arg1, Object...  arg2);
+        MethodBody write_r(String arg1, Object...  arg2);
     }
-
-    public interface If18 extends If16, If17, AutoCloseable {
-    }
-
-    public interface MethodBody extends If1, If18, AutoCloseable {
-    }
-
-    public interface If19 {
+    public interface MethodBody extends Ukeg,AutoCloseable,Uhab {}
+    public interface Ofob{
+        MethodBody args(String...  arg1);
         MethodBody noArgs();
-
-        MethodBody args(String... arg1);
     }
-
-    public interface If20 extends If19, AutoCloseable {
-        If19 exceptions(String arg1);
+    public interface Ecac extends AutoCloseable,Ofob {
+        Ofob exceptions(String arg1);
     }
-
-    public interface If21 extends AutoCloseable, If20 {
-        If20 returnType(String arg1);
+    public interface Akec extends Ecac,AutoCloseable {
+        Ecac returnType(String arg1);
     }
-
-    public interface If22 extends AutoCloseable, If21 {
-        If21 modifiers(String arg1);
+    public interface Uguc extends Akec,AutoCloseable {
+        Akec modifiers(String arg1);
     }
-
-    public interface If23 {
-        If22 method(String arg1);
+    public interface Oded {
+        Uguc method(String arg1);
     }
-
-    public interface If24 extends If15, If2, AutoCloseable, If12, If23, If9 {
+    public interface Ufuf{
+        Ajef comment(String arg1, Object...  arg2);
+        Ajef newline();
+        Ajef open(String arg1, Object...  arg2);
+        Ajef statement(String arg1, Object...  arg2);
+        Ajef write(String arg1, Object...  arg2);
+        Ajef write_l(String arg1, Object...  arg2);
+        Ajef write_r(String arg1, Object...  arg2);
     }
-
-    public interface If1 extends If0, AutoCloseable, If24 {
+    public interface Ajef extends Ukeg,AutoCloseable,Ufuf {}
+    public interface Oceg {
+        Ajef elseStatement();
     }
+    public interface Ebud extends Ukeg,Oceg,AutoCloseable {}
+    public interface Ahah{
+        Ekog comment(String arg1, Object...  arg2);
+        Ekog newline();
+        Ekog open(String arg1, Object...  arg2);
+        Ekog statement(String arg1, Object...  arg2);
+        Ekog write(String arg1, Object...  arg2);
+        Ekog write_l(String arg1, Object...  arg2);
+        Ekog write_r(String arg1, Object...  arg2);
+    }
+    public interface Ekog extends Ahah,AutoCloseable,Ebud {}
+    public interface Udoh {
+        Ekog ifStatement(String arg1, Object...  arg2);
+    }
+    public interface Ejoj{
+        Obaj comment(String arg1, Object...  arg2);
+        Obaj newline();
+        Obaj open(String arg1, Object...  arg2);
+        Obaj statement(String arg1, Object...  arg2);
+        Obaj write(String arg1, Object...  arg2);
+        Obaj write_l(String arg1, Object...  arg2);
+        Obaj write_r(String arg1, Object...  arg2);
+    }
+    public interface Obaj extends Ukeg,Ejoj,AutoCloseable {}
+    public interface Agak {
+        Obaj forStatement(String arg1, Object...  arg2);
+    }
+    public interface Okuk{
+        Ucok comment(String arg1, Object...  arg2);
+        Ucok newline();
+        Ucok open(String arg1, Object...  arg2);
+        Ucok statement(String arg1, Object...  arg2);
+        Ucok write(String arg1, Object...  arg2);
+        Ucok write_l(String arg1, Object...  arg2);
+        Ucok write_r(String arg1, Object...  arg2);
+    }
+    public interface Ucok extends Ukeg,Okuk,AutoCloseable {}
+    public interface Ehebe {
+        Ucok whileStatement(String arg1, Object...  arg2);
+    }
+    public interface Afube extends Udoh,Oded,Abok,Efeh,Ujaj,Ogoj,AutoCloseable,Ehebe,Edak,Acuh,Ohug,Agak{
+    }
+    public interface Ukeg extends Afube,AutoCloseable,Aduf {}
     //</editor-fold>
 
     /**
@@ -320,7 +226,7 @@ public class JavaSource implements AutoCloseable {
      *
      * @param s          the format string
      * @param parameters optional parameters
-     * @return this
+     * @return {@code this}
      */
     public JavaSource write(String s, Object... parameters) {
         if (s.trim().length() == 0) {
@@ -338,8 +244,9 @@ public class JavaSource implements AutoCloseable {
     }
 
     /**
-     * Add a new line to the
-     * @return this
+     * Add a new line to the current code.
+     *
+     * @return {@code this}
      */
     public JavaSource newline() {
         code.append("\n");
@@ -352,7 +259,7 @@ public class JavaSource implements AutoCloseable {
      *
      * @param s          the format string
      * @param parameters optional parameters
-     * @return this
+     * @return {@code this}
      */
     public JavaSource write_r(String s, Object... parameters) {
         write(s, parameters);
@@ -365,7 +272,7 @@ public class JavaSource implements AutoCloseable {
      *
      * @param s          the format string
      * @param parameters optional parameters
-     * @return this
+     * @return {@code this}
      */
     public JavaSource write_l(String s, Object... parameters) {
         tabStop -= TAB;
@@ -382,7 +289,7 @@ public class JavaSource implements AutoCloseable {
      *
      * @param s          the line to be added to the code
      * @param parameters the format parameters
-     * @return this
+     * @return {@code this}
      */
     public JavaSource write_lr(String s, Object... parameters) {
         tabStop -= TAB;
@@ -422,7 +329,7 @@ public class JavaSource implements AutoCloseable {
     }
 
     public JavaSource args(String... args) {
-        var argList = String.join(",", Arrays.stream(args).collect(Collectors.toList()));
+        var argList = String.join(",", args);
         var sb = new StringBuilder();
         if (lastMethod.modifiers != null && lastMethod.modifiers.length() > 0) {
             sb.append(lastMethod.modifiers).append(" ");
@@ -445,7 +352,7 @@ public class JavaSource implements AutoCloseable {
      * @param s          the line that opens the block without the {@code $&#123;}at the end of the line. That will automatically
      *                   be appended.
      * @param parameters parameters of the line
-     * @return this
+     * @return {@code this}
      */
     public JavaSource open(String s, Object... parameters) {
         s += "{";

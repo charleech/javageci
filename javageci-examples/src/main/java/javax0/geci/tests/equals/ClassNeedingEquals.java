@@ -11,7 +11,7 @@ public class ClassNeedingEquals {
     private byte aByte;
     private boolean aBoolean;
     private char aChar;
-    @Geci("equals exclude='yes'")
+    @Geci("equals filter='false'")
     private ClassNeedingEquals huss;
     private short aShort;
     private long aLong;
@@ -28,6 +28,11 @@ public class ClassNeedingEquals {
     }
 
     //<editor-fold id="equals">
+    @javax0.geci.annotations.Generated("equals")
+    @Override
+    public int hashCode() {
+        return Objects.hash(aBoolean, aByte, aChar, aDouble, aFloat, aLong, aShort, anInt, h, x);
+    }
     @javax0.geci.annotations.Generated("equals")
     @Override
     public final boolean equals(Object o) {
@@ -47,10 +52,5 @@ public class ClassNeedingEquals {
         return Objects.equals(x, that.x);
     }
 
-    @javax0.geci.annotations.Generated("equals")
-    @Override
-    public int hashCode() {
-        return Objects.hash(aBoolean, aByte, aChar, aDouble, aFloat, aLong, aShort, anInt, h, x);
-    }
     //</editor-fold>
 }

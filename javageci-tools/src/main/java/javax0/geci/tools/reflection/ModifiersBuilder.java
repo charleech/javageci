@@ -30,6 +30,9 @@ public class ModifiersBuilder {
         check(Modifier::isFinal,"final ");
         check(Modifier::isStatic,"static ");
         check(Modifier::isSynchronized,"synchronized ");
+        check(Modifier::isVolatile,"volatile ");
+        check(Modifier::isStrict,"strictfp ");
+        check(Modifier::isTransient,"transient ");
 
         return s.toString();
     }

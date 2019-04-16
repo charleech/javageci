@@ -7,6 +7,35 @@ import java.util.Objects;
 public interface Source {
 
     /**
+     * This method can be used to specify that the directories are standard maven directories. When the
+     * project is multi-module and the test code invoking Geci is not in the same module as the code needing to be
+     * processed by the generator then declaration of sources should use this method. The argument should be '{@code ..}'
+     * or whatever the directory of the root module is relative to the directory of the module where the test is.
+     *
+     * @param root the directory to the root module where the top level {@code pom.xml} containing the
+     *             <pre>
+     *                                                 {@code <modules>
+     *                                                     <module>...</module>
+     *                                                   </modules>}
+     *                                                 </pre>
+     *             declaration is.
+     * @return a new Maven source directory configuration object.
+     */
+    static Maven maven(final String root) {
+        return new Maven(root);
+    }
+
+    /**
+     * Simple method to specify that the sources are in a maven project and they follow the standard directory
+     * structure.
+     *
+     * @return a new Maven source directory configuration object.
+     */
+    static Maven maven() {
+        return new Maven();
+    }
+
+    /**
      * Return the named segment that the generator can write. Return {@code null} if there is no such segment
      * in the file.
      *
@@ -17,8 +46,22 @@ public interface Source {
     Segment open(String id) throws IOException;
 
     /**
+     * Create a temporary segment. This segment is dangling and does not belong to the actual source and also it does
+     * not have a name. The starting tab stop of the segment is zero. Extra padding is added to the lines when the
+     * segment is appended to the final segment. As it implies such temporary segments can be used
+     * to write code into this segment and later merge this segment into one segment that belongs to a source.
+     *
+     * @return a new anonymous segment
+     */
+    Segment temporary();
+
+    /**
      * Open the "global" segment that is the whole source file. Usually used on sources that are created calling
      * {@link #newSource(String)}
+     * <p>
+     * If you invoke this method on a source that was "hand-made" then you will essentially delete the content of the
+     * file. If you want to get the content of a source file you should call {@link #getLines()} on the source object
+     * itself.
      *
      * @return the new segment object.
      */
@@ -122,7 +165,8 @@ public interface Source {
         private final String name;
 
         private Set(String name) {
-            if (name == null) throw new IllegalArgumentException("Name can not be null");
+            if (name == null)
+                throw new IllegalArgumentException("Name can not be null");
             this.name = name;
         }
 
@@ -158,40 +202,150 @@ public interface Source {
         }
     }
 
+    class NamedSourceSet {
+        final Set set;
+        final String[] directories;
+
+        public NamedSourceSet(Set set, String[] directories) {
+            this.set = set;
+            this.directories = directories;
+        }
+    }
+
+    /**
+     * Class to build up the directory structures that correspond to the Maven directory structure
+     */
     class Maven {
+        private final String rootModuleDir;
         private String module = null;
 
-        private String[] source(String main, String java) {
+        private Maven() {
+            rootModuleDir = null;
+        }
+
+        private Maven(final String root) {
+            rootModuleDir = root;
+        }
+
+        /**
+         * Return the array of directories where the Java sources could be found.
+         * <p>
+         * If there is no maven module defined then there is only one directory,
+         * <pre>
+         * '{@code ./src/(main|test)/(java|resources)}'
+         * </pre>
+         * wehere the sources can be. This is sufficient. The current working directory is the project root
+         * when the tests are started either interactively in an IDE or from the command line using the
+         * command {@code mvn}.
+         * </p>
+         * <p>
+         * If there is a maven module defined then execution of the tests and thus the generators can be started
+         * with different current working directory. Practice shows that the current working directory is the
+         * project root when you start the code generation along with the test using the {@code mvn} command. On the
+         * other hand when the tests are executed from the IDE then the current working directory is the root
+         * directory of the module root where the test belongs to.
+         * </p>
+         * <p>
+         * When the test executing the code generation is in the same module as the code that is the target of the
+         * code generation then the directories are
+         * <pre>
+         *     {@code ./module/src/(main|test)/(java|resources)
+         *     }
+         * </pre>
+         * or
+         * <pre>
+         *     {@code ./src/(main|test)/(java|resources)
+         *     }
+         * </pre>
+         * </p>
+         * <p>
+         * When the test is not in the same module as the code that needs the generational support then the
+         * directories should be
+         * code generation then the directories are
+         * <pre>
+         *     {@code $root/module/src/(main|test)/(java|resources)
+         *     }
+         * </pre>
+         * or
+         * <pre>
+         *     {@code ./module/src/(main|test)/(java|resources)
+         *     }
+         * </pre>
+         * where {@code $root} is where the root module is. In this case the test should specify the source
+         * directories calling the static method {@link Source#maven(String)} specifying the value for
+         * {@code $root} instead of simply calling {@link Source#maven()}. The specified {@code $root} is
+         * usually simply '{@code ..}'.
+         * </p>
+         * This method calculates these directories and returns the arrays.
+         *
+         * @param mainOrTest      is either '{@code main}' or '{@code test}'
+         * @param javaOrResources is either '{@code java}' or '{@code resources}'
+         * @return the array of directory names where the generator has to look for the sources
+         */
+        private NamedSourceSet source(String name, String mainOrTest, String javaOrResources) {
             if (module == null) {
-                return new String[]{"./src/" + main + "/" + java};
+                return new NamedSourceSet(Set.set(name), new String[]{"./src/" + mainOrTest + "/" + javaOrResources});
             } else {
-                return new String[]{"./src/" + main + "/" + java, "./" + module + "/src/" + main + "/" + java};
+                if (rootModuleDir == null) {
+                    return new NamedSourceSet(Set.set(name), new String[]{
+                            "./" + module + "/src/" + mainOrTest + "/" + javaOrResources,
+                            "./src/" + mainOrTest + "/" + javaOrResources
+                    });
+                } else {
+                    return new NamedSourceSet(Set.set(name), new String[]{
+                            rootModuleDir + "/" + module + "/src/" + mainOrTest + "/" + javaOrResources,
+                            "./" + module + "/src/" + mainOrTest + "/" + javaOrResources
+                    });
+                }
             }
         }
 
-        public String[] mainSource() {
-            return source("main", "java");
+
+        /**
+         * See also {@link #source(String, String, String)}
+         *
+         * @return the array of directories where the main java sources could be found.
+         */
+        public NamedSourceSet mainSource() {
+            return source(Geci.MAIN_SOURCE, "main", "java");
         }
 
-        public String[] testSource() {
-            return source("test", "java");
+        /**
+         * See also {@link #source(String, String, String)}
+         *
+         * @return the array of directories where the test java sources could be found.
+         */
+        public NamedSourceSet testSource() {
+            return source(Geci.TEST_SOURCE, "test", "java");
         }
 
-        public String[] testResources() {
-            return source("test", "resources");
+        /**
+         * See also {@link #source(String, String, String)}
+         *
+         * @return the array of directories where the test resource files could be found.
+         */
+        public NamedSourceSet testResources() {
+            return source(Geci.TEST_RESOURCES,"test", "resources");
         }
 
-        public String[] mainResources() {
-            return source("main", "resources");
+        /**
+         * See also {@link #source(String, String, String)}
+         *
+         * @return the array of directories where the main resource files could be found.
+         */
+        public NamedSourceSet mainResources() {
+            return source(Geci.MAIN_RESOURCES, "main", "resources");
         }
 
+        /**
+         * Specify the maven module where the sources needing the code generation are.
+         *
+         * @param module the name of the maven module
+         * @return {@code this}
+         */
         public Maven module(String module) {
             this.module = module;
             return this;
         }
-    }
-
-    static Maven maven() {
-        return new Maven();
     }
 }
